@@ -1,6 +1,6 @@
 name: "Wols CA - Eufy HA Bridge"
 description: "C++ Docker Bridge interfacing Eufy Mega v6 with Home Assistant."
-version: "1.0.9"
+version: "1.1.1"
 slug: "wols_ca_eufy_bridge"
 init: false
 image: "ghcr.io/wolsca/wols_ca_ha_eufy/wols-ca-eufy-bridge"
@@ -12,8 +12,16 @@ options:
   EUFY_PASS: ""
   EUFY_STATION_SN: ""
   HA_ACCESS_TOKEN: ""
+  MQTT_HOST: "core-mosquitto"
+  MQTT_PORT: 1883
+  MQTT_USER: ""
+  MQTT_PASS: ""
 schema:
   EUFY_USER: str
   EUFY_PASS: password
   EUFY_STATION_SN: str
   HA_ACCESS_TOKEN: password
+  MQTT_HOST: str
+  MQTT_PORT: int
+  MQTT_USER: str
+  MQTT_PASS: password
