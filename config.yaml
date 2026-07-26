@@ -1,0 +1,19 @@
+name: "Wols CA - Eufy HA Bridge"
+description: "C++ Docker Bridge interfacing Eufy Mega v6 with Home Assistant."
+version: "1.0.4"
+slug: "wols_ca_eufy_bridge"
+init: false
+image: "ghcr.io/wolsca/wols_ca_ha_eufy/wols-ca-eufy-bridge"
+arch:
+  - aarch64
+  - amd64
+options:
+  EUFY_USER: ""
+  EUFY_PASS: ""
+  EUFY_STATION_SN: ""
+  HA_ACCESS_TOKEN: ""
+schema:
+  EUFY_USER: str
+  EUFY_PASS: password
+  EUFY_STATION_SN: str
+  HA_ACCESS_TOKEN: password

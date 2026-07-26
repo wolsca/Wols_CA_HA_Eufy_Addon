@@ -1,0 +1,26 @@
+Copyright (c) 2026 Wols CA. All Rights Reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to use, 
+copy, and deploy the Software solely as an integration or add-on within the 
+Home Assistant ecosystem.
+
+The Software may not be modified, redistributed, or utilized in any other 
+commercial or non-commercial application, platform, or product outside of 
+Home Assistant without explicit prior written permission from Wols CA.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+THIRD-PARTY ACKNOWLEDGEMENTS
+
+This software utilizes the Qt Toolkit (Enterprise Edition). 
+Qt is a registered trademark of The Qt Company Ltd. and/or its subsidiaries. 
+The Qt Toolkit is used under a commercial license agreement and remains 
+the intellectual property of The Qt Company Ltd.
