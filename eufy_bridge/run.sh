@@ -9,14 +9,21 @@ CONFIG_PATH=/data/options.json
 if [ -f "$CONFIG_PATH" ]; then
     echo "[INFO] Loading configuration from Home Assistant..."
     
-    export EUFY_USERNAME=$(jq --raw-output '.username // empty' $CONFIG_PATH)
-    export EUFY_PASSWORD=$(jq --raw-output '.password // empty' $CONFIG_PATH)
-    export EUFY_COUNTRY=$(jq --raw-output '.country // "NL"' $CONFIG_PATH)
+    # Koppel de exacte UI-sleutels (zoals EUFY_USER) aan de Environment Variables
+    export EUFY_USERNAME=$(jq --raw-output '.EUFY_USER // empty' $CONFIG_PATH)
+    export EUFY_PASSWORD=$(jq --raw-output '.EUFY_PASS // empty' $CONFIG_PATH)
+    
+    # Haal ook direct jouw MQTT instellingen uit de UI
+    export MQTT_HOST=$(jq --raw-output '.MQTT_HOST // "127.0.0.1"' $CONFIG_PATH)
+    export MQTT_PORT=$(jq --raw-output '.MQTT_PORT // "1883"' $CONFIG_PATH)
+    export MQTT_USER=$(jq --raw-output '.MQTT_USER // empty' $CONFIG_PATH)
+    export MQTT_PASS=$(jq --raw-output '.MQTT_PASS // empty' $CONFIG_PATH)
+    
+    export EUFY_COUNTRY="NL"
     export EUFY_PERSISTENT_DIR="/data/sidecar/eufy_data"
     
-    # Extra logging om te verifiëren wat jq uit het HA bestand trekt
     echo "[DEBUG] [Bash] Extracted EUFY_USERNAME: '${EUFY_USERNAME}'"
-    echo "[DEBUG] [Bash] Extracted EUFY_COUNTRY: '${EUFY_COUNTRY}'"
+    echo "[DEBUG] [Bash] Extracted MQTT_HOST: '${MQTT_HOST}'"
     
     if [ -z "$EUFY_USERNAME" ] || [ "$EUFY_USERNAME" == "null" ]; then
         echo "[ERROR] Eufy Username is not set in Home Assistant configuration."
