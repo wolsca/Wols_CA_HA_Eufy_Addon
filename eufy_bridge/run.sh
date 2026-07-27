@@ -1,26 +1,35 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
 
-# Extract the current version from the local config.yaml
-APP_VERSION=$(grep '^version:' /app/config.yaml | cut -d '"' -f 2)
-TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
+echo "[INFO] Wols CA Eufy HA Bridge is initializing..."
 
-echo ""
-echo "================================================================="
-echo "[$TIMESTAMP] Wols CA C++ Backend v$APP_VERSION - INITIALIZING STARTUP SEQUENCE"
-echo "================================================================="
+# 1. Lees configuratie uit Home Assistant in
+CONFIG_PATH=/data/options.json
 
-# Extract user configuration from Home Assistant Add-on /data/options.json using jq
-export EUFY_USER=$(jq -r '.EUFY_USER' /data/options.json)
-export EUFY_PASS=$(jq -r '.EUFY_PASS' /data/options.json)
-export EUFY_STATION_SN=$(jq -r '.EUFY_STATION_SN' /data/options.json)
-export HA_ACCESS_TOKEN=$(jq -r '.HA_ACCESS_TOKEN' /data/options.json)
-export MQTT_HOST=$(jq -r '.MQTT_HOST' /data/options.json)
-export MQTT_PORT=$(jq -r '.MQTT_PORT' /data/options.json)
-export MQTT_USER=$(jq -r '.MQTT_USER' /data/options.json)
-export MQTT_PASS=$(jq -r '.MQTT_PASS' /data/options.json)
+if [ -f "$CONFIG_PATH" ]; then
+    echo "[INFO] Loading configuration from Home Assistant..."
+    
+    export EUFY_USERNAME=$(jq --raw-output '.username // empty' $CONFIG_PATH)
+    export EUFY_PASSWORD=$(jq --raw-output '.password // empty' $CONFIG_PATH)
+    export EUFY_COUNTRY=$(jq --raw-output '.country // "NL"' $CONFIG_PATH)
+    export EUFY_PERSISTENT_DIR="/data/sidecar/eufy_data"
+    
+    # Extra logging om te verifiëren wat jq uit het HA bestand trekt
+    echo "[DEBUG] [Bash] Extracted EUFY_USERNAME: '${EUFY_USERNAME}'"
+    echo "[DEBUG] [Bash] Extracted EUFY_COUNTRY: '${EUFY_COUNTRY}'"
+    
+    if [ -z "$EUFY_USERNAME" ] || [ "$EUFY_USERNAME" == "null" ]; then
+        echo "[ERROR] Eufy Username is not set in Home Assistant configuration."
+        exit 1
+    fi
+else
+    echo "[WARNING] options.json not found. Assuming local testing environment with pre-set variables."
+fi
 
-echo "[$TIMESTAMP] Configuration loaded successfully. Handing over to C++ binary..."
-echo "================================================================="
+# 2. Zorg dat de data mappen bestaan
+mkdir -p /data/sidecar
+mkdir -p /data/sidecar/eufy_data
 
-# Execute the compiled binary
-/app/build/Wols_CA_HA_Eufy
+# 3. Start de C++ Orchestrator
+echo "[INFO] Handing over control to C++ Sidecar Orchestrator."
+exec /app/build/Wols_CA_HA_Eufy
