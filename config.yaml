@@ -1,0 +1,117 @@
+name: "Wols CA - HA - Eufy Test Build"
+description: "Test environment for HA - Eufy Bridge via build numbers"
+# WCA FIX: version/slug deliberately remain different from the repo-config.yaml.
+# The slug determines the add-on identity in Home Assistant; do NOT change it,
+# otherwise HA sees this as a new add-on (empty /data, options lost).
+# The version number is patched by build_edge_container.ps1 along with
+# BUILD_TAG.txt, so that this test configuration can no longer become outdated.
+# Note: builds up to b0000017B used hexadecimal in UPPERCASE,
+# from the next build that is lowercase.
+version: "0.7.0-b0000017c"
+slug: "wols_ca_eufy_test"
+url: "https://github.com/wolsca/Wols_CA_HA_Eufy"
+
+init: false
+startup: services
+boot: auto
+# WCA FIX: the watchdog is probed by the Supervisor from OUTSIDE the container,
+# so it must use the [HOST] placeholder. With 127.0.0.1 the Supervisor probes
+# itself, the check always fails and the add-on is restarted in a loop.
+watchdog: "http://[HOST]:[PORT:8099]/"
+# Gives the add-on a SUPERVISOR_TOKEN for the Core HTTP API (HA areas).
+homeassistant_api: true
+services:
+  - mqtt:need
+  # WCA FIX: 'want' instead of 'need' so that an external MariaDB remains possible.
+  # The Supervisor injects the credentials of the core-mariadb add-on.
+  - mysql:want
+
+ingress: true
+ingress_panel: true
+ingress_port: 8099
+panel_icon: "mdi:shield-home"
+panel_title: "Eufy CC"
+
+arch:
+  - aarch64
+  - amd64
+
+# WCA FIX: explicitly no hardware access (no /dev nodes, no GPIO).
+devices: []
+gpio: false
+
+# WCA FIX: The {arch} tag is essential here; without this tag the
+# Supervisor searches for an image that does not exist (404 manifest unknown).
+image: "ghcr.io/wolsca/wols_ha_eufy_test-{arch}"
+
+map:
+  # share:rw is mandatory: the persistent data is in /share/wca.
+  - share:rw
+  # Only needed as long as you want to be able to read the old /config/wca_eufy location.
+  - homeassistant_config:rw
+
+options:
+  # EUFY_USER must be an account that is used only by this connection; Eufy does
+  # not allow the same account to be signed in twice (for example the Eufy phone app).
+  EUFY_USER: "admin.fischer.wols@gmail.com"
+  EUFY_PASS: "<password>"
+  EUFY_COUNTRY: "NL"
+  EUFY_STATION_SN: "<serie number>"
+  EUFY_TRUSTED_DEVICE_NAME: "Home Assistant Eufy Bridge"
+  HA_ACCESS_TOKEN: "<token>"
+  MQTT_HOST: "core-mosquitto"
+  MQTT_PORT: 1883
+  MQTT_USER: "<user>"
+  MQTT_PASS: "<password>"
+  # WCA FIX: MariaDB. core-mariadb is the Home Assistant MariaDB add-on; an
+  # external server works identically. Create the database 'eufy_database' and the
+  # user once (MariaDB add-on -> Configuration -> logins/databases).
+  DB_HOST: "core-mariadb"
+  DB_PORT: 3306
+  DB_NAME: "eufy_database"
+  DB_USER: "<db user>"
+  DB_PASS: "<db password>"
+  DEBUG_LOGGING: false
+  LOG_LEVEL: "INFO"
+  # WCA FIX: default true; ingress and watchdog use the container IP.
+  GUI_BIND_ALL: true
+  GUI_REQUIRE_INGRESS: true
+  EVENT_VERBOSE: false
+  HA_ALARM_ENTITY: "input_select.wca_alarm_mode"
+  EUFY_STATION_IP_ADDRESSES: ""
+  EUFY_P2P_CONNECTION_SETUP: "quickest"
+  EUFY_ACCEPT_INVITATIONS: true
+  EUFY_SIMULTANEOUS_DETECTIONS: false
+  EUFY_EMBEDDED_PKCS1_SUPPORT: false
+  EUFY_POLLING_INTERVAL_MINUTES: 5
+  EUFY_EVENT_DURATION_SECONDS: 10
+
+schema:
+  EUFY_USER: str
+  EUFY_PASS: password
+  EUFY_COUNTRY: str
+  EUFY_STATION_SN: str?
+  EUFY_TRUSTED_DEVICE_NAME: str?
+  HA_ACCESS_TOKEN: password?
+  MQTT_HOST: str
+  MQTT_PORT: int
+  MQTT_USER: str?
+  MQTT_PASS: password?
+  DB_HOST: str
+  DB_PORT: int
+  DB_NAME: str
+  DB_USER: str?
+  DB_PASS: password?
+  DEBUG_LOGGING: bool?
+  LOG_LEVEL: "list(ERROR|WARN|INFO|DEBUG)?"
+  GUI_BIND_ALL: bool?
+  GUI_REQUIRE_INGRESS: bool?
+  EVENT_VERBOSE: bool?
+  HA_ALARM_ENTITY: str?
+  EUFY_STATION_IP_ADDRESSES: str?
+  EUFY_P2P_CONNECTION_SETUP: "list(quickest|local)?"
+  EUFY_ACCEPT_INVITATIONS: bool?
+  EUFY_SIMULTANEOUS_DETECTIONS: bool?
+  EUFY_EMBEDDED_PKCS1_SUPPORT: bool?
+  EUFY_POLLING_INTERVAL_MINUTES: int(1,60)?
+  EUFY_EVENT_DURATION_SECONDS: int(1,300)?
