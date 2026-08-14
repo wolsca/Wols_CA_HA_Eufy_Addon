@@ -7,7 +7,7 @@ description: "Test environment for HA - Eufy Bridge via build numbers"
 # BUILD_TAG.txt, so that this test configuration can no longer become outdated.
 # Note: builds up to b0000017B used hexadecimal in UPPERCASE,
 # from the next build that is lowercase.
-version: "0.7.0-b0000017c"
+version: "0.7.0-b0000017d"
 slug: "wols_ca_eufy_test"
 url: "https://github.com/wolsca/Wols_CA_HA_Eufy"
 
