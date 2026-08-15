@@ -7,7 +7,7 @@ description: "Test environment for HA - Eufy Bridge via build numbers"
 # BUILD_TAG.txt, so that this test configuration can no longer become outdated.
 # Note: builds up to b0000017B used hexadecimal in UPPERCASE,
 # from the next build that is lowercase.
-version: "0.7.0-b0000017e"
+version: "0.8.0-b0000017f"
 slug: "wols_ca_eufy_test"
 url: "https://github.com/wolsca/Wols_CA_HA_Eufy"
 
@@ -50,27 +50,36 @@ map:
   # Only needed as long as you want to be able to read the old /config/wca_eufy location.
   - homeassistant_config:rw
 
+# WCA FIX: NEVER put placeholder text such as "<user>" or "<password>" in these
+# defaults. This file is uploaded to the add-on repository by
+# build_edge_container.ps1, so the Supervisor uses these values as the DEFAULTS of
+# the add-on. A placeholder is a NON-EMPTY value, so the add-on then connects to a
+# broker/database with a bogus username, and the mqtt:need fallback in run.sh (which
+# only fires when MQTT_USER is empty) is skipped. Leave every secret empty here and
+# fill it in through the add-on Configuration tab.
 options:
   # EUFY_USER must be an account that is used only by this connection; Eufy does
   # not allow the same account to be signed in twice (for example the Eufy phone app).
-  EUFY_USER: "admin.fischer.wols@gmail.com"
-  EUFY_PASS: "<password>"
+  EUFY_USER: ""
+  EUFY_PASS: ""
   EUFY_COUNTRY: "NL"
-  EUFY_STATION_SN: "<serie number>"
+  EUFY_STATION_SN: ""
   EUFY_TRUSTED_DEVICE_NAME: "Home Assistant Eufy Bridge"
-  HA_ACCESS_TOKEN: "<token>"
+  HA_ACCESS_TOKEN: ""
+  # Leave MQTT_USER/MQTT_PASS empty to let the Supervisor supply the broker
+  # credentials (services: mqtt:need). Only override them for an external broker.
   MQTT_HOST: "core-mosquitto"
   MQTT_PORT: 1883
-  MQTT_USER: "<user>"
-  MQTT_PASS: "<password>"
+  MQTT_USER: ""
+  MQTT_PASS: ""
   # WCA FIX: MariaDB. core-mariadb is the Home Assistant MariaDB add-on; an
   # external server works identically. Create the database 'eufy_database' and the
   # user once (MariaDB add-on -> Configuration -> logins/databases).
   DB_HOST: "core-mariadb"
   DB_PORT: 3306
   DB_NAME: "eufy_database"
-  DB_USER: "<db user>"
-  DB_PASS: "<db password>"
+  DB_USER: ""
+  DB_PASS: ""
   DEBUG_LOGGING: false
   LOG_LEVEL: "INFO"
   # WCA FIX: default true; ingress and watchdog use the container IP.
