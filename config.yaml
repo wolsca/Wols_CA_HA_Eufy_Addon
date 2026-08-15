@@ -7,7 +7,7 @@ description: "Test environment for HA - Eufy Bridge via build numbers"
 # BUILD_TAG.txt, so that this test configuration can no longer become outdated.
 # Note: builds up to b0000017B used hexadecimal in UPPERCASE,
 # from the next build that is lowercase.
-version: "0.8.0-b00000183"
+version: "0.8.0-b00000184"
 slug: "wols_ca_eufy_test"
 url: "https://github.com/wolsca/Wols_CA_HA_Eufy"
 
@@ -86,7 +86,13 @@ options:
   GUI_BIND_ALL: true
   GUI_REQUIRE_INGRESS: true
   EVENT_VERBOSE: false
+  # WCA FIX: may be an alarm_control_panel.* entity (for example the SPC4000
+  # bridge panel); the live state watcher subscribes to it directly.
   HA_ALARM_ENTITY: "input_select.wca_alarm_mode"
+  HA_BASE_URL: ""
+  ALARM_SYSTEM_KIND: "generic"
+  ALARM_CAPTURE_ALL: true
+  ALARM_EVENT_RETENTION: 5000
   EUFY_STATION_IP_ADDRESSES: ""
   EUFY_P2P_CONNECTION_SETUP: "quickest"
   EUFY_ACCEPT_INVITATIONS: true
@@ -117,6 +123,10 @@ schema:
   GUI_REQUIRE_INGRESS: bool?
   EVENT_VERBOSE: bool?
   HA_ALARM_ENTITY: str?
+  HA_BASE_URL: str?
+  ALARM_SYSTEM_KIND: "list(generic|spc4000|manual)?"
+  ALARM_CAPTURE_ALL: bool?
+  ALARM_EVENT_RETENTION: int(100,100000)?
   EUFY_STATION_IP_ADDRESSES: str?
   EUFY_P2P_CONNECTION_SETUP: "list(quickest|local)?"
   EUFY_ACCEPT_INVITATIONS: bool?
