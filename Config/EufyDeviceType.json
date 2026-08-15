@@ -91,6 +91,7 @@
   "T8001": { "type": "Station / Hub", "name": "HomeBase" },
   "T8010": { "type": "Station / Hub", "name": "HomeBase 2" },
   "T8030": { "type": "Station / Hub", "name": "HomeBase 3" },
+  "T9000": { "type": "Station / Hub", "name": "HomeBase Professional S1", "cloudOnly": true },
   "T8002": { "type": "Station / Hub", "name": "HomeBase E" },
   "T8020": { "type": "Station / Hub", "name": "HomeBase Lite/wifi chime" },
   "T8023": { "type": "Station / Hub", "name": "MiniBase Chime" },
